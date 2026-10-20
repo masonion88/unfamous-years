@@ -53,6 +53,9 @@ export async function signIn(_prev: ActionState, formData: FormData): Promise<Ac
     email: text(formData, "email"),
     password: typeof formData.get("password") === "string" ? (formData.get("password") as string) : "",
   });
+  if (error?.code === "email_not_confirmed") {
+    return { error: "This email isn't confirmed yet. Confirm the user in Supabase → Authentication → Users." };
+  }
   if (error) return { error: "That email and password didn't work." };
 
   const { data: isAdmin } = await supabase.rpc("is_admin");
